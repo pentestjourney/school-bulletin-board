@@ -1,3 +1,43 @@
+const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+function savePosts() {
+    localStorage.setItem('posts', JSON.stringify(posts));
+}
+
+function createPost() {
+    const title = document.getElementById('post-title').value;
+    const content = document.getElementById('post-content').value;
+
+    if (title === '' || content === '') {
+        alert('Please fill out both the title and content!');
+        return;
+    }
+
+    const newPost = {
+        id: Date.now(),
+        title: title,
+        content: content,
+        comments: []
+    };
+
+    posts.push(newPost);
+    savePosts();
+    renderPosts();
+
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-content').value = '';
+}
+
+function addComment(postId) {
+    const commentContent = prompt('Enter your comment:');
+    if (commentContent) {
+        const post = posts.find(post => post.id === postId);
+        post.comments.push(commentContent);
+        savePosts();
+        renderPosts();
+    }
+}
+
 function renderPosts() {
     const postsContainer = document.getElementById('posts');
     postsContainer.innerHTML = '';
@@ -36,3 +76,7 @@ function renderPosts() {
         postsContainer.appendChild(postElement);
     });
 }
+
+// Initial render on page load
+renderPosts();
+
